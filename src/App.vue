@@ -77,7 +77,7 @@ const filteredTodos = computed(() => {
 
     <div class="m-20">
       <h1 class="text-4xl text-center mt-20">Simple To-do List</h1>
-      <h2 class="text-2xl mb-5">Tasks: {{ todos.length }}</h2>
+      <h2 class="text-2xl mb-5">Number of Tasks: {{ todos.length }}</h2>
 
       <form @submit.prevent="addTodo" class="mb-5 flex gap-5">
         <input
@@ -88,7 +88,9 @@ const filteredTodos = computed(() => {
         <button type="submit" class="btn btn-primary">Add</button>
       </form>
       <div>
-        <div class="w-1/2 text-center"  v-if="todos.length == 0">No Task Today</div>
+        <div class="w-1/2 text-center font-medium" v-if="todos.length == 0">
+          No Task Today
+        </div>
         <div
           v-else
           class="mb-2 flex items-center justify-between w-1/2"
@@ -103,7 +105,7 @@ const filteredTodos = computed(() => {
               class="input input-bordered"
               placeholder="Edit task here"
             />
-            <button @click="saveTodo" class="btn btn-primary">Save</button>
+       
           </div>
           <p
             v-else
@@ -113,7 +115,8 @@ const filteredTodos = computed(() => {
             {{ todo.text }}
           </p>
           <div class="flex gap-2">
-            <button @click="editTodo(todo.id)" class="btn btn-secondary">Edit</button>
+            <button v-if="editingTodoId !== todo.id" @click="editTodo(todo.id)" class="btn btn-secondary">Edit</button>
+            <button v-else @click="saveTodo" class="btn btn-primary">Save</button>
             <button @click="removeTodo(todo.id)" class="btn btn-error">Delete</button>
           </div>
         </div>
