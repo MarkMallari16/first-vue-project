@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 const count = ref(0);
 let id = 0;
@@ -52,6 +52,14 @@ function saveTodo() {
     editingTodoText.value = "";
   }
 }
+const hideCompleted = ref(false);
+
+function hide() {
+  hideCompleted.value = !hideCompleted.value;
+}
+const filteredTodos = computed(() => {
+  return hideCompleted.value ? todos.value.filter((todo) => !todo.done) : todos.value;
+});
 </script>
 
 <template>
@@ -75,17 +83,19 @@ function saveTodo() {
         <input
           v-model="newTodo"
           class="input input-bordered w-1/2"
-          placeholder="add task here"
+          placeholder="Enter Task"
         />
         <button type="submit" class="btn btn-primary">Add</button>
       </form>
       <div>
+        <div class="w-1/2 text-center"  v-if="todos.length == 0">No Task Today</div>
         <div
+          v-else
           class="mb-2 flex items-center justify-between w-1/2"
-          v-for="todo in todos"
+          v-for="todo in filteredTodos"
           :key="todo.id"
         >
-          <input type="checkbox" v-model="todo.done" class="checkbox"/>
+          <input type="checkbox" v-model="todo.done" class="checkbox" />
 
           <div v-if="editingTodoId === todo.id" class="flex gap-2">
             <input
@@ -95,19 +105,24 @@ function saveTodo() {
             />
             <button @click="saveTodo" class="btn btn-primary">Save</button>
           </div>
-          <p v-else class="font-medium" :class="{'line-through': todo.done, 'text-green-500': todo.done }">{{ todo.text }}</p>
+          <p
+            v-else
+            class="font-medium"
+            :class="{ 'line-through': todo.done, 'text-green-500': todo.done }"
+          >
+            {{ todo.text }}
+          </p>
           <div class="flex gap-2">
             <button @click="editTodo(todo.id)" class="btn btn-secondary">Edit</button>
             <button @click="removeTodo(todo.id)" class="btn btn-error">Delete</button>
           </div>
         </div>
+        <button @click="hide" class="btn btn-ghost">
+          {{ hideCompleted ? "Show All" : "Hide Completed" }}
+        </button>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-.text {
-  color: blue;
-}
-</style>
+<style scoped></style>
