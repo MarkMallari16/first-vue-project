@@ -63,16 +63,10 @@ const sortedTodos = computed(() => {
   const sortedArray = filteredTodos.value.sort((a, b) => {
     if (sortedOrder.value === "asc") {
       return a.text.localeCompare(b.text);
-    } else if (sortedOrder.value === "desc") {
-      return b.text.localeCompare(a.text);
     } else {
-      return 0;
+      return b.text.localeCompare(a.text);
     }
   });
-
-  if (sortedOrder.value === "reverse") {
-    sortedArray.reverse();
-  }
   return sortedArray;
 });
 </script>
@@ -96,6 +90,7 @@ const sortedTodos = computed(() => {
         v-model="newTodo"
         class="input input-bordered w-1/2"
         placeholder="Enter Task"
+        maxlength="50"
       />
       <button type="submit" class="btn btn-primary">Add</button>
     </form>
