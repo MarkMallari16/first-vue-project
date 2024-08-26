@@ -3,7 +3,9 @@ import { computed, ref } from "vue";
 
 const count = ref(0);
 let id = 0;
+
 const newTodo = ref("");
+
 const todos = ref([
   { id: id++, text: "Kain", done: true },
   { id: id++, text: "Tulog", done: false },
@@ -11,6 +13,11 @@ const todos = ref([
 
 const editingTodoId = ref(null);
 const editingTodoText = ref("");
+const hideCompleted = ref(false);
+const sortedOrder = ref("asc");
+const characterCount = computed(() => {
+  return newTodo.value.length;
+});
 
 function increment() {
   count.value++;
@@ -52,8 +59,6 @@ function saveTodo() {
     editingTodoText.value = "";
   }
 }
-const hideCompleted = ref(false);
-const sortedOrder = ref("asc");
 
 function hide() {
   hideCompleted.value = !hideCompleted.value;
@@ -90,17 +95,13 @@ const sortedTodos = computed(() => {
       <h1 class="text-4xl text-center mt-20">Simple To-do List</h1>
       <div class="mt-10 mb-5 flex items-center w-1/2 justify-between">
         <h2 class="text-2xl">Number of Tasks: {{ todos.length }}</h2>
-        <select
-          v-model="sortedOrder"
-         
-          className="select w-full max-w-xs"
-        >
+        <select v-model="sortedOrder" className="select w-full max-w-xs">
           <option disabled selected>Sort task</option>
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
         </select>
       </div>
- 
+
       <form @submit.prevent="addTodo" class="mb-5 flex gap-5">
         <input
           v-model="newTodo"
@@ -109,6 +110,8 @@ const sortedTodos = computed(() => {
         />
         <button type="submit" class="btn btn-primary">Add</button>
       </form>
+
+      <p>{{ characterCount }}/50</p>
       <div>
         <div class="w-1/2 text-center font-medium" v-if="todos.length == 0">
           No Task Today
