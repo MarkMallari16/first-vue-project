@@ -64,7 +64,9 @@ function hide() {
   hideCompleted.value = !hideCompleted.value;
 }
 const filteredTodos = computed(() => {
-  return hideCompleted.value ? todos.value.filter((todo) => !todo.done) : todos.value;
+  return hideCompleted.value
+    ? [...todos.value].filter((todo) => !todo.done)
+    : todos.value;
 });
 
 const sortedTodos = computed(() => {
@@ -150,9 +152,11 @@ const sortedTodos = computed(() => {
             <button @click="removeTodo(todo.id)" class="btn btn-error">Delete</button>
           </div>
         </div>
-        <button @click="hide" class="btn btn-ghost">
-          {{ hideCompleted ? "Show All" : "Hide Completed" }}
-        </button>
+        <div v-if="todos.length > 0">
+          <button @click="hide" class="btn btn-ghost">
+            {{ hideCompleted ? "Show All" : "Hide Completed" }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
