@@ -53,12 +53,23 @@ function saveTodo() {
   }
 }
 const hideCompleted = ref(false);
+const sortedOrder = ref("asc");
 
 function hide() {
   hideCompleted.value = !hideCompleted.value;
 }
 const filteredTodos = computed(() => {
   return hideCompleted.value ? todos.value.filter((todo) => !todo.done) : todos.value;
+});
+
+const sortedTodos = computed(() => {
+  return filteredTodos.value.sort((a, b) => {
+    if (sortedOrder.value === "asc") {
+      return a.text.localeCompare(b.text);
+    } else {
+      return b.text.localeCompare(a.text);
+    }
+  });
 });
 </script>
 
@@ -77,8 +88,19 @@ const filteredTodos = computed(() => {
 
     <div class="m-20">
       <h1 class="text-4xl text-center mt-20">Simple To-do List</h1>
-      <h2 class="text-2xl mb-5">Number of Tasks: {{ todos.length }}</h2>
-
+      <div class="mt-10 mb-5 flex items-center w-1/2 justify-between">
+        <h2 class="text-2xl">Number of Tasks: {{ todos.length }}</h2>
+        <select
+          v-model="sortedOrder"
+         
+          className="select w-full max-w-xs"
+        >
+          <option disabled selected>Sort task</option>
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
+        </select>
+      </div>
+ 
       <form @submit.prevent="addTodo" class="mb-5 flex gap-5">
         <input
           v-model="newTodo"
@@ -94,7 +116,7 @@ const filteredTodos = computed(() => {
         <div
           v-else
           class="mb-2 flex items-center justify-between w-1/2"
-          v-for="todo in filteredTodos"
+          v-for="todo in sortedTodos"
           :key="todo.id"
         >
           <input type="checkbox" v-model="todo.done" class="checkbox" />
@@ -105,7 +127,6 @@ const filteredTodos = computed(() => {
               class="input input-bordered"
               placeholder="Edit task here"
             />
-       
           </div>
           <p
             v-else
@@ -115,7 +136,13 @@ const filteredTodos = computed(() => {
             {{ todo.text }}
           </p>
           <div class="flex gap-2">
-            <button v-if="editingTodoId !== todo.id" @click="editTodo(todo.id)" class="btn btn-secondary">Edit</button>
+            <button
+              v-if="editingTodoId !== todo.id"
+              @click="editTodo(todo.id)"
+              class="btn btn-secondary"
+            >
+              Edit
+            </button>
             <button v-else @click="saveTodo" class="btn btn-primary">Save</button>
             <button @click="removeTodo(todo.id)" class="btn btn-error">Delete</button>
           </div>
