@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 
 let id = 0;
 
@@ -19,7 +19,13 @@ const hasError = ref(false);
 const characterCount = computed(() => {
   return newTodo.value.length;
 });
+onMounted(() => {
+  const newTodoInput = document.querySelector("input[ref=newTodoInput]");
 
+  if (newTodoInput) {
+    newTodoInput.focus();
+  }
+});
 
 function addTodo() {
   if (newTodo.value.trim() === "") {
@@ -63,7 +69,7 @@ const filteredTodos = computed(() => {
 });
 
 const sortedTodos = computed(() => {
-  const sortedArray = filteredTodos.value.sort((a, b) => {
+  const sortedArray = filteredTodos.value.slice().sort((a, b) => {
     if (sortedOrder.value === "asc") {
       return a.text.localeCompare(b.text);
     } else {
@@ -83,8 +89,6 @@ const sortedTodos = computed(() => {
         <option disabled selected>Sort task</option>
         <option value="asc">Ascending</option>
         <option value="desc">Descending</option>
-        <option value="reverse">Reverse</option>
-        <option value="">Normal</option>
       </select>
     </div>
 
@@ -94,11 +98,12 @@ const sortedTodos = computed(() => {
         class="input input-bordered w-1/2"
         placeholder="Enter Task"
         maxlength="50"
+        ref="newTodoInput"
       />
       <button type="submit" class="btn btn-primary">Add</button>
     </form>
     <div class="mb-5">
-      <p class="mb-1" v-if="hasError" :class="{ 'text-red-500': hasError }">
+      <p class="mb-1" v-show="hasError" :class="{ 'text-red-500': hasError }">
         You must enter a task!
       </p>
       <p>{{ characterCount }}/50</p>
