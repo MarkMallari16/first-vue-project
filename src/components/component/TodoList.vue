@@ -15,17 +15,19 @@ const editingTodoText = ref("");
 const hideCompleted = ref(false);
 
 const sortedOrder = ref("asc");
+const hasError = ref(false);
 const characterCount = computed(() => {
   return newTodo.value.length;
 });
 
 function addTodo() {
   if (newTodo.value.trim() === "") {
-    alert("Please enter a task");
+    hasError.value = true;
     return;
   }
   todos.value.push({ id: id++, text: newTodo.value });
   newTodo.value = "";
+  hasError.value = false;
 }
 
 function removeTodo(id) {
@@ -85,7 +87,7 @@ const sortedTodos = computed(() => {
       </select>
     </div>
 
-    <form @submit.prevent="addTodo" class="mb-5 flex gap-5">
+    <form @submit.prevent="addTodo" class="mb-2 flex gap-5">
       <input
         v-model="newTodo"
         class="input input-bordered w-1/2"
@@ -94,8 +96,10 @@ const sortedTodos = computed(() => {
       />
       <button type="submit" class="btn btn-primary">Add</button>
     </form>
-
-    <p>{{ characterCount }}/50</p>
+    <div class="mb-5">
+      <p class="mb-1" v-if="hasError" :class="{ 'text-red-500': hasError }">You must enter a task!</p>
+      <p>{{ characterCount }}/50</p>
+    </div>
     <div>
       <div class="w-1/2 text-center font-medium" v-if="todos.length == 0">
         No Task Today
