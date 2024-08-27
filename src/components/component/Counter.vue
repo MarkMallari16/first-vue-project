@@ -1,6 +1,13 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 const count = ref(0);
+
+watch(count, (newCount) => {
+  if (newCount > 5) {
+    alert("Stop Counting");
+  }
+});
+
 function increment() {
   count.value++;
 }

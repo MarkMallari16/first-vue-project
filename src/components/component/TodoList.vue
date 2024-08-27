@@ -20,6 +20,7 @@ const characterCount = computed(() => {
   return newTodo.value.length;
 });
 
+
 function addTodo() {
   if (newTodo.value.trim() === "") {
     hasError.value = true;
@@ -97,7 +98,9 @@ const sortedTodos = computed(() => {
       <button type="submit" class="btn btn-primary">Add</button>
     </form>
     <div class="mb-5">
-      <p class="mb-1" v-if="hasError" :class="{ 'text-red-500': hasError }">You must enter a task!</p>
+      <p class="mb-1" v-if="hasError" :class="{ 'text-red-500': hasError }">
+        You must enter a task!
+      </p>
       <p>{{ characterCount }}/50</p>
     </div>
     <div>
